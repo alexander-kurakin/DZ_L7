@@ -5,6 +5,8 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
+using Assets._Project.Develop.Runtime.Gameplay.Features.AI.States;
+using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
@@ -16,6 +18,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
         private readonly EntitiesFactory _entitiesFactory;
         private readonly BrainsFactory _brainsFactory;
         private readonly EntitiesLifeContext _entitiesLifeContext;
+        private readonly MainHeroHolderService _mainHeroHolderService;
 
         public EnemiesFactory(DIContainer container)
         {
@@ -23,6 +26,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
             _entitiesFactory = _container.Resolve<EntitiesFactory>();
             _brainsFactory = _container.Resolve<BrainsFactory>();
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
+            _mainHeroHolderService = _container.Resolve<MainHeroHolderService>();
         }
 
         public Entity Create(Vector3 position, EntityConfig config)
@@ -33,7 +37,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
             {
                 case WalkingEnemyConfig walkingEnemyConfig:
                     entity = _entitiesFactory.CreateWalkingEnemy(position, walkingEnemyConfig);
-                    //TODO _brainsFactory.CreateWalkingEnemyBrain(entity);
+                    _brainsFactory.CreateWalkingEnemyBrain(entity, new MainHeroTargetSelector(_mainHeroHolderService));
                     break;
 
                 default:
