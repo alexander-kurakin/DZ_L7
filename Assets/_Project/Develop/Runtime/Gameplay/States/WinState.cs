@@ -10,19 +10,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
     public class WinState : EndGameState, IUpdatableState
     {
-        private readonly GameplayInputArgs _inputArgs;
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly SceneSwitcherService _sceneSwitcherService;
         private readonly ICoroutinesPerformer _coroutinesPerformer;
 
         public WinState(
             IInputService inputService,
-            GameplayInputArgs inputArgs,
             PlayerDataProvider playerDataProvider,
             SceneSwitcherService sceneSwitcherService,
             ICoroutinesPerformer coroutinesPerformer) : base(inputService)
         {
-            _inputArgs = inputArgs;
             _playerDataProvider = playerDataProvider;
             _sceneSwitcherService = sceneSwitcherService;
             _coroutinesPerformer = coroutinesPerformer;

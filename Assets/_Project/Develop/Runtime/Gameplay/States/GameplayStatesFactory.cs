@@ -33,7 +33,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         {
             return new WinState(
                 _container.Resolve<IInputService>(),
-                inputArgs,
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<SceneSwitcherService>(),
                 _container.Resolve<ICoroutinesPerformer>());
