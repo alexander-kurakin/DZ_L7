@@ -31,6 +31,11 @@ namespace _Project.Develop.Runtime.Configs.Meta.Stats
             _wins.Value++;
         }
 
+        public string GetStatsText()
+        {
+            return $"Wins: {_wins.Value}, Losses: {_losses.Value}";
+        }
+
         public void ReadFrom(PlayerData data)
         {
             _wins.Value =  data.Wins;

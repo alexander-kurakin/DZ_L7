@@ -58,7 +58,7 @@ namespace _Project.Develop.Runtime.UI.Gameplay
 
         private void RefreshStatsView()
         {
-            _screen.StatsView.SetText($"Wins: {_statsService.Wins.Value}, Losses: {_statsService.Losses.Value}");
+            _screen.StatsView.SetText(_statsService.GetStatsText());
         }
 
         public void Dispose()
