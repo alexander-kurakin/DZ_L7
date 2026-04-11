@@ -12,8 +12,8 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProviders
         private readonly ConfigsProviderService _configsProviderService;
 
         public PlayerDataProvider(
-            ISaveLoadSerivce saveLoadSerivce, 
-            ConfigsProviderService configsProviderService) : base(saveLoadSerivce)
+            ISaveLoadSerivce saveLoadService, 
+            ConfigsProviderService configsProviderService) : base(saveLoadService)
         {
             _configsProviderService = configsProviderService;
         }
@@ -22,8 +22,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProviders
         {
             return new PlayerData()
             {
-                WalletData = InitWalletData(),
-                CompletedLevels = new()
+                WalletData = InitWalletData()
             };
         }
 

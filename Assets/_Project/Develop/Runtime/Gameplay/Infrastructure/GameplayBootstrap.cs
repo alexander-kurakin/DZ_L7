@@ -29,7 +29,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             _container = container;
 
             if (sceneArgs is not GameplayInputArgs gameplayInputArgs)
-                throw new ArgumentException($"{nameof(sceneArgs)} is not match with {typeof(GameplayInputArgs)} type");
+                throw new ArgumentException($"{nameof(sceneArgs)} is not matching with {typeof(GameplayInputArgs)} type");
 
             _inputArgs = gameplayInputArgs;
 
@@ -39,7 +39,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         public override IEnumerator Initialize()
         {
             Debug.Log($"Вы попали на уровень {_inputArgs.LevelNumber}");
-
             Debug.Log("Инициализация геймплейной сцены");
 
             _walletService = _container.Resolve<WalletService>();

@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
-    public class PreperationState : State, IUpdatableState
+    public class PreparationState : State, IUpdatableState
     {
         private readonly PreparationTriggerService _preparationTriggerService;
 
-        public PreperationState(PreparationTriggerService preparationTriggerService)
+        public PreparationState(PreparationTriggerService preparationTriggerService)
         {
             _preparationTriggerService = preparationTriggerService;
         }

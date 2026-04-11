@@ -3,16 +3,10 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
-using Assets._Project.Develop.Runtime.Meta.Features.LevelsProgression;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProviders;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
@@ -25,9 +19,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             _container = container;
         }
 
-        public PreperationState CreatePreperationState()
+        public PreparationState CreatePreparationState()
         {
-            return new PreperationState(_container.Resolve<PreparationTriggerService>());
+            return new PreparationState(_container.Resolve<PreparationTriggerService>());
         }
 
         public StageProcessState CreateStageProcessState()
@@ -39,7 +33,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         {
             return new WinState(
                 _container.Resolve<IInputService>(),
-                _container.Resolve<LevelsProgressionService>(),
                 inputArgs,
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<SceneSwitcherService>(),
@@ -54,7 +47,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                 _container.Resolve<ICoroutinesPerformer>());
         }
 
-        public GameplayStateMachine CreateGameplayStateMachine(GameplayInputArgs gameplayInputArgs)
+        public GameplayStateMachine CreateGameplayStateMachine(GameplayInputArgs inputArgs)
         {
             PreparationTriggerService preparationTriggerService = _container.Resolve<PreparationTriggerService>();
             StageProviderService stageProviderService = _container.Resolve<StageProviderService>();
@@ -63,7 +56,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             GameplayStateMachine coreLoopState = CreateCoreLoopState();
 
             DefeatState defeatState = CreateDefeatState();
-            WinState winState = CreateWinState(gameplayInputArgs);
+            WinState winState = CreateWinState(inputArgs);
 
             ICompositeCondition coreLoopToWinStateCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => preparationTriggerService.PrepareTriggerClicked.Value))
@@ -96,23 +89,23 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             PreparationTriggerService preparationTriggerService = _container.Resolve<PreparationTriggerService>();
             StageProviderService stageProviderService = _container.Resolve<StageProviderService>();
 
-            PreperationState preperationState = CreatePreperationState();
+            PreparationState preparationState = CreatePreparationState();
             StageProcessState stageProcessState = CreateStageProcessState();
 
-            ICompositeCondition preperationToStageProcessCondition = new CompositeCondition()
+            ICompositeCondition preparationToStageProcessCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => preparationTriggerService.PrepareTriggerClicked.Value))
                 .Add(new FuncCondition(() => stageProviderService.HasNextStage()));
 
-            FuncCondition stageProcessToPreperationCondition =
+            FuncCondition stageProcessToPreparationCondition =
                 new FuncCondition(() => stageProviderService.CurrentStageResult.Value == StageResults.Completed);
 
             GameplayStateMachine coreLoopState = new GameplayStateMachine();
 
-            coreLoopState.AddState(preperationState);
+            coreLoopState.AddState(preparationState);
             coreLoopState.AddState(stageProcessState);
 
-            coreLoopState.AddTransition(preperationState, stageProcessState, preperationToStageProcessCondition);
-            coreLoopState.AddTransition(stageProcessState, preperationState, stageProcessToPreperationCondition);
+            coreLoopState.AddTransition(preparationState, stageProcessState, preparationToStageProcessCondition);
+            coreLoopState.AddTransition(stageProcessState, preparationState, stageProcessToPreparationCondition);
 
             return coreLoopState;
         }
