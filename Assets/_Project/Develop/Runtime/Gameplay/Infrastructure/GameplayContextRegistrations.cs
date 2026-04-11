@@ -118,7 +118,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
         private static MainHeroFactory CreateMainHeroFactory(DIContainer c)
         {
-            return new MainHeroFactory(c);
+            return new MainHeroFactory(c, _inputArgs.LevelNumber);
         }
 
         private static DesktopInput CreateDesktopInput(DIContainer c)
