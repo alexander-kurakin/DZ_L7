@@ -32,8 +32,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             Debug.Log("ПОБЕДА! Нажмите Q чтобы вернуться в главное меню");
 
             _coroutinesPerformer.StartPerform(_playerDataProvider.SaveAsync());
-            
-            
         }
 
         public void Update(float deltaTime)

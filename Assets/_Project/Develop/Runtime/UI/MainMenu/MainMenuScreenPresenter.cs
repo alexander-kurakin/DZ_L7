@@ -2,6 +2,7 @@
 using Assets._Project.Develop.Runtime.UI.Wallet;
 using System;
 using System.Collections.Generic;
+using _Project.Develop.Runtime.Configs.Meta.Stats;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
@@ -23,12 +24,18 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
         private readonly ICoroutinesPerformer _coroutinesPerformer;
         private readonly SceneSwitcherService _sceneSwitcherService;
 
+        private readonly StatsService _statsService;
+        
+        private IDisposable _winsChanged;
+        private IDisposable _lossesChanged;
+
         public MainMenuScreenPresenter(
             MainMenuScreenView screen,
             ProjectPresentersFactory projectPresentersFactory,
             LevelsListConfig levelsListConfig,
             ICoroutinesPerformer coroutinesPerformer,
-            SceneSwitcherService sceneSwitcherService
+            SceneSwitcherService sceneSwitcherService,
+            StatsService statsService
             )
         {
             _screen = screen;
@@ -36,16 +43,36 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             _levelsListConfig = levelsListConfig;
             _coroutinesPerformer = coroutinesPerformer;
             _sceneSwitcherService = sceneSwitcherService;
+            _statsService = statsService;
         }
 
         public void Initialize()
         {
             _screen.PlayButtonClicked += OnPlayButtonClicked;
 
+            _winsChanged = _statsService.Wins.Subscribe(OnWinsChanged);
+            _lossesChanged = _statsService.Losses.Subscribe(OnLossesChanged);
+
             CreateWallet();
+            RefreshStatsView();
 
             foreach (IPresenter presenter in _childPresenters)
                 presenter.Initialize();
+        }
+        
+        private void OnLossesChanged(int arg1, int arg2)
+        {
+            RefreshStatsView();
+        }
+
+        private void OnWinsChanged(int arg1, int arg2)
+        {
+            RefreshStatsView();
+        }
+
+        private void RefreshStatsView()
+        {
+            _screen.StatsView.SetText($"Wins: {_statsService.Wins.Value}, Losses: {_statsService.Losses.Value}");
         }
 
         public void Dispose()
@@ -56,6 +83,9 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
                 presenter.Dispose();
 
             _childPresenters.Clear();
+            
+            _winsChanged?.Dispose();
+            _lossesChanged?.Dispose();
         }
 
         private void CreateWallet()

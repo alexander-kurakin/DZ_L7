@@ -14,6 +14,7 @@ namespace Assets._Project.Develop.Runtime.UI.Core
         {
             {ViewIDs.CurrencyView, "UI/Wallet/CurrencyView" },
             {ViewIDs.MainMenuScreen, "UI/MainMenu/MainMenuScreenView" },
+            {ViewIDs.GameplayScreen, "UI/Gameplay/GameplayScreenView" },
             {ViewIDs.TestPopup, "UI/TestPopup" }
         };
 

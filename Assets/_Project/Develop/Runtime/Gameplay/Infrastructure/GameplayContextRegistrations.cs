@@ -1,4 +1,5 @@
 ﻿using _Project.Develop.Runtime.Gameplay.Features.Input;
+using _Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
@@ -9,6 +10,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
+using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.Utilities.AssetsManagment;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
@@ -55,6 +57,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.RegisterAsSingle(CreateMouseRaycastService);
 
             container.RegisterAsSingle(CreateMonoEntitiesFactory).NonLazy();
+            
+            container.RegisterAsSingle(CreateGameplayUIRoot).NonLazy();
+            
+            container.RegisterAsSingle(CreateGameplayPresentersFactory);
+            
+            container.RegisterAsSingle(CreateGameplayScreenPresenter).NonLazy();
         }
         
         private static MouseRaycastService CreateMouseRaycastService(DIContainer c)
@@ -149,6 +157,34 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private static EntitiesFactory CreateEntitiesFactory(DIContainer c)
         {
             return new EntitiesFactory(c);
+        }
+        
+        private static GameplayUIRoot CreateGameplayUIRoot(DIContainer c)
+        {
+            ResourcesAssetsLoader resourcesAssetsLoader = c.Resolve<ResourcesAssetsLoader>();
+
+            GameplayUIRoot gameplayUIRootPrefab = resourcesAssetsLoader
+                .Load<GameplayUIRoot>("UI/Gameplay/GameplayUIRoot");
+
+            return Object.Instantiate(gameplayUIRootPrefab);
+        }
+
+        private static GameplayPresentersFactory CreateGameplayPresentersFactory(DIContainer c)
+            => new GameplayPresentersFactory(c);
+
+        private static GameplayScreenPresenter CreateGameplayScreenPresenter(DIContainer c)
+        {
+            GameplayUIRoot gameplayUIRoot = c.Resolve<GameplayUIRoot>();
+            
+            GameplayScreenView view = c
+                .Resolve<ViewsFactory>()
+                .Create<GameplayScreenView>(ViewIDs.GameplayScreen, gameplayUIRoot.HUDLayer);
+
+            GameplayScreenPresenter presenter = c
+                .Resolve<GameplayPresentersFactory>()
+                .CreateGameplayScreen(view);
+
+            return presenter;
         }
     }
 }

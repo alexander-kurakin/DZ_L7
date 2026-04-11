@@ -1,4 +1,5 @@
-﻿using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
+﻿using _Project.Develop.Runtime.Configs.Meta.Stats;
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
@@ -22,7 +23,8 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
                 _container.Resolve<ProjectPresentersFactory>(),
                 _container.Resolve<ConfigsProviderService>().GetConfig<LevelsListConfig>(),
                 _container.Resolve<ICoroutinesPerformer>(),
-                _container.Resolve<SceneSwitcherService>());
+                _container.Resolve<SceneSwitcherService>(),
+                _container.Resolve<StatsService>());
         }
     }
 }

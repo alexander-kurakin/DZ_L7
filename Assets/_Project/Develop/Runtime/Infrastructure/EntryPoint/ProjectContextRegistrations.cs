@@ -16,6 +16,7 @@ using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
 using Assets._Project.Develop.Runtime.Utilities.Timer;
 using System;
 using System.Collections.Generic;
+using _Project.Develop.Runtime.Configs.Meta.Stats;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -48,7 +49,8 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreateTimerService);
 
             container.RegisterAsSingle<ISaveLoadSerivce>(CreateSaveLoadService);
-
+            
+            container.RegisterAsSingle(CreateStatsService).NonLazy();
         }
 
         private static TimerServiceFactory CreateTimerService(DIContainer c)
@@ -59,6 +61,14 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
         private static ProjectPresentersFactory CreateProjectPresentersFactory(DIContainer c)
             => new ProjectPresentersFactory(c);
+        
+        private static StatsService CreateStatsService(DIContainer c)
+        {
+            ReactiveVariable<int> wins =  new();
+            ReactiveVariable<int> losses = new();
+
+            return new StatsService(wins, losses, c.Resolve<PlayerDataProvider>());
+        }
 
         private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
             => new PlayerDataProvider(c.Resolve<ISaveLoadSerivce>(), c.Resolve<ConfigsProviderService>());
