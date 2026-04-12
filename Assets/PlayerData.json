@@ -2,5 +2,7 @@
   "WalletData": {
     "Gold": 200,
     "Diamond": 25
-  }
+  },
+  "Wins": 0,
+  "Losses": 0
 }

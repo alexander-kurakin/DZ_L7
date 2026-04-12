@@ -1,6 +1,8 @@
 ﻿using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
+using Assets._Project.Develop.Runtime.Gameplay.Features.DealDamageOnTargetReached;
+using Assets._Project.Develop.Runtime.Gameplay.Features.DistanceDetector;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
@@ -91,16 +93,24 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddDeathProcessCurrentTime()
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
-                .AddCurrentTarget();
+                .AddCurrentTarget()
+                .AddDistanceToTargetGoal(new ReactiveVariable<float>(config.DistanceToTargetGoal))
+                .AddDistanceToTargetCurrent(new ReactiveVariable<float>(config.DistanceToTargetGoal))
+                .AddDistanceToTargetReachedEvent()
+                .AddDistanceToTargetReached()
+                .AddExplosionDamage(new ReactiveVariable<float>(config.ExplosionDamage));
             
             ICompositeCondition canMove = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+                .Add(new FuncCondition(() => entity.IsDead.Value == false))
+                .Add(new FuncCondition(() => entity.DistanceToTargetReached.Value == false));
 
             ICompositeCondition canRotate = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+                .Add(new FuncCondition(() => entity.IsDead.Value == false))
+                .Add(new FuncCondition(() => entity.DistanceToTargetReached.Value == false));
 
-            ICompositeCondition mustDie = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
+            ICompositeCondition mustDie = new CompositeCondition(LogicOperations.Or)
+                .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0))
+                .Add(new FuncCondition(() => entity.DistanceToTargetReached.Value));
 
             ICompositeCondition mustSelfRelease = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value))
@@ -123,7 +133,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new DeathSystem())
                 .AddSystem(new DisableCollidersOnDeathSystem())
                 .AddSystem(new DeathProcessTimerSystem())
-                .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
+                .AddSystem(new SelfReleaseSystem(_entitiesLifeContext))
+                .AddSystem(new DistanceDetectorSystem())
+                .AddSystem(new DealDamageOnTargetReachedSystem());
 
             return entity;
         }
