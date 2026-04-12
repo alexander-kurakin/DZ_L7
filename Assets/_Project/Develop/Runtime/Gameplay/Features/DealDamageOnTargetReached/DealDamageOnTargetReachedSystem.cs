@@ -10,18 +10,22 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.DealDamageOnTargetRe
         private IDisposable _targetReachedRequest;
         private ReactiveVariable<float> _explosionDamage;
         private ReactiveVariable<Entity> _target;
+        private Entity _entity;
         
         public void OnInit(Entity entity)
         {
             _explosionDamage = entity.ExplosionDamage;
             _target = entity.CurrentTarget;
-            
+            _entity = entity;
             _targetReachedRequest = entity.DistanceToTargetReachedEvent.Subscribe(OnTargetReached);
         }
 
         private void OnTargetReached()
         {
-            _target.Value?.TakeDamageRequest.Invoke(_explosionDamage.Value);
+            if (_target.Value == null)
+                return;
+            
+            EntitiesHelper.TryTakeDamageFrom(_entity, _target.Value, _explosionDamage.Value);
         }
 
         public void OnDispose()

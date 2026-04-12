@@ -60,7 +60,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             => _coroutinesPerformer.StartPerform(_playerDataProvider.SaveAsync());
 
         private void SwitchToMainMenu() 
-            =>_coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
+            => _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
         
         public void Update(float deltaTime)
         {
