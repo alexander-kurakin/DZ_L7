@@ -1,45 +1,43 @@
-﻿using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
-using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
+﻿using _Project.Develop.Runtime.Configs.Meta.Stats;
+using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
+using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProviders;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
-using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
-    public class WinState : EndGameState, IUpdatableState
+    public class WinState : EndGameState
     {
-        private readonly PlayerDataProvider _playerDataProvider;
-        private readonly SceneSwitcherService _sceneSwitcherService;
-        private readonly ICoroutinesPerformer _coroutinesPerformer;
-
+        private readonly WalletService _walletService;
+        private readonly int _rewardGold;
+        
         public WinState(
             IInputService inputService,
             PlayerDataProvider playerDataProvider,
             SceneSwitcherService sceneSwitcherService,
-            ICoroutinesPerformer coroutinesPerformer) : base(inputService)
+            ICoroutinesPerformer coroutinesPerformer,
+            StatsService statsService,
+            WalletService walletService,
+            int rewardGold) : base(inputService, playerDataProvider, sceneSwitcherService, coroutinesPerformer, statsService)
         {
-            _playerDataProvider = playerDataProvider;
-            _sceneSwitcherService = sceneSwitcherService;
-            _coroutinesPerformer = coroutinesPerformer;
+            _walletService = walletService;
+            _rewardGold = rewardGold;
         }
 
-        public override void Enter()
+        protected override void OnEndGameStateEntered()
         {
-            base.Enter();
-
             Debug.Log("ПОБЕДА! Нажмите Q чтобы вернуться в главное меню");
-
-            _coroutinesPerformer.StartPerform(_playerDataProvider.SaveAsync());
         }
 
-        public void Update(float deltaTime)
+        protected override void RecordResults()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
-            }
+            Stats.RecordWin();
+            
+            if (_rewardGold > 0)
+                _walletService.Add(CurrencyTypes.Gold, _rewardGold);
         }
+
     }
 }
