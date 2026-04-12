@@ -17,7 +17,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         {
             base.Enter();
 
-            Vector3 nextStageTriggerPosition = Vector3.zero + Vector3.forward * 4;
+            Vector3 nextStageTriggerPosition = Vector3.zero + Vector3.forward * 15;
             _preparationTriggerService.Create(nextStageTriggerPosition);
         }
 

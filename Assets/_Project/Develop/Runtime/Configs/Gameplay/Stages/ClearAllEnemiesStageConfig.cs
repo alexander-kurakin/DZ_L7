@@ -9,5 +9,6 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Stages
         [SerializeField] private List<EnemyItemConfig> _enemyItems;
 
         public IReadOnlyList<EnemyItemConfig> EnemyItems => _enemyItems;
+        [field: SerializeField] public float EnemySpawnRadius { get; private set; }
     }
 }
