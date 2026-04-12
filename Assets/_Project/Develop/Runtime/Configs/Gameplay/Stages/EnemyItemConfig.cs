@@ -8,5 +8,6 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Stages
     public class EnemyItemConfig
     {
         [field: SerializeField] public EntityConfig EnemyConfig { get; private set; }
+        [field: SerializeField] public int EnemiesCount { get; private set; }
     }
 }

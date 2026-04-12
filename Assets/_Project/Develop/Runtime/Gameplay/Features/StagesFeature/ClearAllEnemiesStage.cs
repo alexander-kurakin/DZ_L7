@@ -101,21 +101,23 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 
         private void SpawnEnemy(EnemyItemConfig enemyItemConfig)
         {
-            
-            Entity spawnedEnemy =  
-                _enemiesFactory.Create(GenerateRandomPositionInCircle(), enemyItemConfig.EnemyConfig);
-
-            IDisposable removeReason = spawnedEnemy.IsDead.Subscribe((oldValue, isDead) =>
+            for (int i = 0; i < enemyItemConfig.EnemiesCount; i++)
             {
-                if (isDead)
-                {
-                    IDisposable disposable = _spawnedEnemiesToRemoveReason[spawnedEnemy];
-                    disposable.Dispose();
-                    _spawnedEnemiesToRemoveReason.Remove(spawnedEnemy);
-                }
-            });
+                Entity spawnedEnemy =
+                    _enemiesFactory.Create(GenerateRandomPositionInCircle(), enemyItemConfig.EnemyConfig);
 
-            _spawnedEnemiesToRemoveReason.Add(spawnedEnemy, removeReason);
+                IDisposable removeReason = spawnedEnemy.IsDead.Subscribe((oldValue, isDead) =>
+                {
+                    if (isDead)
+                    {
+                        IDisposable disposable = _spawnedEnemiesToRemoveReason[spawnedEnemy];
+                        disposable.Dispose();
+                        _spawnedEnemiesToRemoveReason.Remove(spawnedEnemy);
+                    }
+                });
+
+                _spawnedEnemiesToRemoveReason.Add(spawnedEnemy, removeReason);
+            }
         }
     }
 }
