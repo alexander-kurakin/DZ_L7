@@ -1,4 +1,5 @@
-﻿using _Project.Develop.Runtime.Gameplay.Features.Input;
+﻿using _Project.Develop.Runtime.Gameplay.Features.DealAreaDamage;
+using _Project.Develop.Runtime.Gameplay.Features.Input;
 using _Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
@@ -63,6 +64,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.RegisterAsSingle(CreateGameplayPresentersFactory);
             
             container.RegisterAsSingle(CreateGameplayScreenPresenter).NonLazy();
+            
+            container.RegisterAsSingle(CreateAreaDamageService);
+        }
+        
+        private static AreaDamageService CreateAreaDamageService(DIContainer c)
+        {
+            return new AreaDamageService(c.Resolve<CollidersRegistryService>());
         }
         
         private static MouseRaycastService CreateMouseRaycastService(DIContainer c)
