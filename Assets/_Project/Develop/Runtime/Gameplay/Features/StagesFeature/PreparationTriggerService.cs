@@ -3,7 +3,9 @@ using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.Input;
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
+using Assets._Project.Develop.Runtime.Utilities;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 
@@ -18,6 +20,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
         private IMouseInputService _mouseInputService;
         private IMouseRaycastService _mouseRaycastService;
         private readonly MouseActionsConfig _mouseActionsConfig;
+        private readonly ContactTriggerConfig _contactTriggerConfig;
 
         private Entity _nextStageTrigger;
 
@@ -33,6 +36,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             _mouseInputService = mouseInputService;
             _mouseRaycastService = mouseRaycastService;
             _mouseActionsConfig = configsProviderService.GetConfig<MouseActionsConfig>();
+            _contactTriggerConfig =  configsProviderService.GetConfig<ContactTriggerConfig>();
         }
 
         public IReadOnlyVariable<bool> PrepareTriggerClicked => _prepareTriggerClicked;
@@ -42,7 +46,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             if (_nextStageTrigger != null)
                 throw new InvalidOperationException("Trigger already created");
 
-            _nextStageTrigger = _entitiesFactory.CreateContactTrigger(position);
+            _nextStageTrigger = _entitiesFactory.CreateContactTrigger(position, _contactTriggerConfig);
         }
 
         public void Update(float deltaTime)
@@ -54,7 +58,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
                     _mouseInputService.PointerScreenPosition, 
                     out RaycastHit hit, 
                     _mouseActionsConfig.MouseRaycastDistance, 
-                    _mouseActionsConfig.ContactTriggerLayerMask) == false)
+                    Layers.ContactTriggerLayerMask) == false)
             
             {
                 _prepareTriggerClicked.Value = false;

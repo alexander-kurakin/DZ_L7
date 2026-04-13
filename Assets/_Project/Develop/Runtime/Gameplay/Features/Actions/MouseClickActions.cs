@@ -1,6 +1,7 @@
 using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.Input;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
+using Assets._Project.Develop.Runtime.Utilities;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 
@@ -48,7 +49,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
                 }
                 else
                 {
-                    bool isFloorFirstLayer = _raycastHit.collider.gameObject.layer == _mouseActionsConfig.FloorLayerIndex;
+                    bool isFloorFirstLayer = _raycastHit.collider.gameObject.layer == Layers.FloorLayerIndex;
                     
                     if (_mouseInput.FireButtonPressed && isFloorFirstLayer)
                         _peacefulClick.TryPerformClick(_raycastHit);
@@ -62,7 +63,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
                     _mouseInput.PointerScreenPosition, 
                     out RaycastHit hit, 
                     _mouseActionsConfig.MouseRaycastDistance,
-                    _mouseActionsConfig.GenericLayerMask))
+                    Layers.GenericLayerMask))
             {
                 _raycastHit = hit;
                 return true;

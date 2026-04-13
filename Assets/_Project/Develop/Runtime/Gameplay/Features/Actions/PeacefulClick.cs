@@ -24,9 +24,9 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 
         public void TryPerformClick(RaycastHit raycastHit)
         {
-            if (_walletService.Enough(CurrencyTypes.Gold, _mineConfig.MineCostInGold)) //config
+            if (_walletService.Enough(CurrencyTypes.Gold, _mineConfig.MineCostInGold)) 
             {
-                _walletService.Spend(CurrencyTypes.Gold, _mineConfig.MineCostInGold); //config
+                _walletService.Spend(CurrencyTypes.Gold, _mineConfig.MineCostInGold);
                 _entitiesFactory.CreateMine(raycastHit.point, _mineConfig);
             }
         }

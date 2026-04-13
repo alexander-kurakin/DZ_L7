@@ -1,6 +1,7 @@
 using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.DealAreaDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Utilities;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 
@@ -10,7 +11,6 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
     {
         private readonly AreaDamageService _areaDamageService;
         private readonly MainHeroHolderService _mainHeroHolderService;
-
 
         public CombatClick(
             AreaDamageService areaDamageService, 
@@ -26,7 +26,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
                 hit.point,
                 mouseActionsConfig.TowerExplosionRadius,
                 mouseActionsConfig.TowerExplosionDamage,
-                mouseActionsConfig.TowerExplosionDamageableLayerMask,
+                Layers.CharactersMask,
                 _mainHeroHolderService.MainHero);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.Actions;
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
@@ -11,7 +12,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
     {
         private readonly PreparationTriggerService _preparationTriggerService;
         private readonly GameplayActionSetService _actionSetService;
-        private readonly MouseActionsConfig _mouseActionsConfig;
+        private readonly ContactTriggerConfig _contactTriggerConfig;
 
         public PreparationState(
             PreparationTriggerService preparationTriggerService, 
@@ -20,7 +21,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         {
             _preparationTriggerService = preparationTriggerService;
             _actionSetService = actionSetService;
-            _mouseActionsConfig = configsProviderService.GetConfig<MouseActionsConfig>();
+            _contactTriggerConfig = configsProviderService.GetConfig<ContactTriggerConfig>();
         }
 
         public override void Enter()
@@ -29,7 +30,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             
             _actionSetService.SetActionSet(ActionSet.Peaceful);
 
-            _preparationTriggerService.Create(_mouseActionsConfig.ContactTriggerStartPosition);
+            _preparationTriggerService.Create(_contactTriggerConfig.ContactTriggerStartPosition);
         }
 
         public void Update(float deltaTime)

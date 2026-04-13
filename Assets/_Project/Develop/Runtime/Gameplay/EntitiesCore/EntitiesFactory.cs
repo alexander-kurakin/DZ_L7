@@ -145,11 +145,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             return entity;
         }
 
-        public Entity CreateContactTrigger(Vector3 position)
+        public Entity CreateContactTrigger(Vector3 position, ContactTriggerConfig config)
         {
             Entity entity = CreateEmpty();
 
-            _monoEntitiesFactory.Create(entity, position, "Entities/ContactTrigger");
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
                 .AddContactsDetectingMask(Layers.CharactersMask)

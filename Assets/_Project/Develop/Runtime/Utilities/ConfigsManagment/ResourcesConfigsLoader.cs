@@ -5,6 +5,7 @@ using Assets._Project.Develop.Runtime.Utilities.AssetsManagment;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Utilities.ConfigsManagment
@@ -19,6 +20,9 @@ namespace Assets._Project.Develop.Runtime.Utilities.ConfigsManagment
             {typeof(CurrencyIconsConfig), "Configs/Meta/Wallet/CurrencyIconsConfig" },
             {typeof(LevelsListConfig), "Configs/Gameplay/Levels/LevelsListConfig" },
             {typeof(TowerConfig), "Configs/Gameplay/Entities/Characters/TowerConfig" },
+            {typeof(MineConfig), "Configs/Gameplay/Entities/Characters/MineConfig" },
+            {typeof(ContactTriggerConfig), "Configs/Gameplay/Entities/Characters/ContactTriggerConfig" },
+            {typeof(MouseActionsConfig), "Configs/Gameplay/MouseActions/MouseActionsConfig" },
         };
 
         public ResourcesConfigsLoader(ResourcesAssetsLoader resources)
