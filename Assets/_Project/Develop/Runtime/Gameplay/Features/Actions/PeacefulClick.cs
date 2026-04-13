@@ -16,6 +16,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
             //TODO: config value for the Spend amount
             if (_walletService.Enough(CurrencyTypes.Gold, 50))
             {
+                
+                
                 _walletService.Spend(CurrencyTypes.Gold, 50);
                 //TODO: new service + method to spawn a mine
             }

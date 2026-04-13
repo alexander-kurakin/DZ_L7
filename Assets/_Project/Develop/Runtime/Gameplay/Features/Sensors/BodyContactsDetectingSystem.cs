@@ -9,37 +9,74 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Sensors
     {
         private Buffer<Collider> _contacts;
         private LayerMask _mask;
+        private CapsuleCollider _capsuleBody;
+        private SphereCollider _sphericalBody;
+        private ColliderType _colliderType;
 
-        private CapsuleCollider _body;
+        public BodyContactsDetectingSystem(ColliderType colliderType)
+        {
+            _colliderType = colliderType;
+        }
 
         public void OnInit(Entity entity)
         {
             _contacts = entity.ContactCollidersBuffer;
             _mask = entity.ContactsDetectingMask;
 
-            _body = entity.BodyCollider;
+            switch (_colliderType)
+            {
+                case ColliderType.Capsule:
+                    _capsuleBody = entity.BodyCollider;
+                    break;
+                case ColliderType.Sphere:
+                    _sphericalBody = entity.MineCollider;
+                    break;
+            }
         }
 
         public void OnUpdate(float deltaTime)
         {
-            _contacts.Count = Physics.OverlapCapsuleNonAlloc(
-                _body.bounds.min,
-                _body.bounds.max,
-                _body.radius,
+            switch (_colliderType)
+            {
+                case ColliderType.Capsule:
+                    OverlapCapsule();
+                    RemoveSelfFromContacts(_capsuleBody);
+                    break;
+                case ColliderType.Sphere:
+                    OverlapSphere();
+                    RemoveSelfFromContacts(_sphericalBody);
+                    break;
+            }
+        }
+
+        private void OverlapSphere()
+        {
+            _contacts.Count = Physics.OverlapSphereNonAlloc(
+                _sphericalBody.transform.position,
+                _sphericalBody.radius,
                 _contacts.Items,
                 _mask,
                 QueryTriggerInteraction.Ignore);
-
-            RemoveSelfFromContacts();
         }
 
-        private void RemoveSelfFromContacts()
+        private void OverlapCapsule()
+        {
+            _contacts.Count = Physics.OverlapCapsuleNonAlloc(
+                _capsuleBody.bounds.min,
+                _capsuleBody.bounds.max,
+                _capsuleBody.radius,
+                _contacts.Items,
+                _mask,
+                QueryTriggerInteraction.Ignore);
+        }
+
+        private void RemoveSelfFromContacts(Collider selfCollider)
         {
             int indexToRemove = -1;
 
             for (int i = 0; i < _contacts.Count; i++)
             {
-                if (_contacts.Items[i] == _body)
+                if (_contacts.Items[i] == selfCollider)
                 {
                     indexToRemove = i;
                     break;

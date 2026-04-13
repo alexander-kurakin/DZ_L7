@@ -1,9 +1,11 @@
-﻿using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
+﻿using _Project.Develop.Runtime.Gameplay.Features.DealAreaDamage;
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.DealDamageOnTargetReached;
 using Assets._Project.Develop.Runtime.Gameplay.Features.DistanceDetector;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Mines;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TakeDamage;
@@ -23,6 +25,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly CollidersRegistryService _collidersRegistryService;
         private readonly MonoEntitiesFactory _monoEntitiesFactory;
+        private readonly AreaDamageService _areaDamageService;
 
         public EntitiesFactory(DIContainer container)
         {
@@ -30,6 +33,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
             _monoEntitiesFactory = _container.Resolve<MonoEntitiesFactory>();
             _collidersRegistryService = _container.Resolve<CollidersRegistryService>();
+            _areaDamageService = _container.Resolve<AreaDamageService>();
         }
 
         public Entity CreateTower(TowerConfig config, LevelConfig levelConfig)
@@ -153,11 +157,36 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddContactEntitiesBuffer(new Buffer<Entity>(64));
 
             entity
-                .AddSystem(new BodyContactsDetectingSystem())
+                .AddSystem(new BodyContactsDetectingSystem(ColliderType.Capsule))
                 .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService));
 
             _entitiesLifeContext.Add(entity);
 
+            return entity;
+        }
+
+        public Entity CreateMine(Vector3 position)
+        {
+            Entity entity = CreateEmpty();
+            
+            _monoEntitiesFactory.Create(entity, position, "Entities/Mine");
+            
+            entity
+                .AddContactsDetectingMask(Layers.CharactersMask)
+                .AddContactCollidersBuffer(new Buffer<Collider>(64))
+                .AddContactEntitiesBuffer(new Buffer<Entity>(64))
+                .AddTeam(new ReactiveVariable<Teams>(Teams.MainHero));
+
+            entity
+                .AddSystem(new BodyContactsDetectingSystem(ColliderType.Sphere))
+                .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
+                .AddSystem(new MineDetonationSystem(
+                    _areaDamageService,
+                    _entitiesLifeContext
+                    ));
+
+            _entitiesLifeContext.Add(entity);
+            
             return entity;
         }
 
