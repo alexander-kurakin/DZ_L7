@@ -1,6 +1,4 @@
-using _Project.Develop.Runtime.Gameplay.Features.Input;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
-using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 
 namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 {
@@ -9,15 +7,18 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
         private readonly GameplayActionSetService _actionSetService;
         private readonly CombatClick _combatClick;
         private readonly PeacefulClick _peacefulClick;
+        private readonly MouseInput _mouseInput;
 
         public MouseClickActions(
             GameplayActionSetService actionSetService,
             CombatClick combatClick,
-            PeacefulClick peacefulClick)
+            PeacefulClick peacefulClick,
+            MouseInput mouseInput)
         {
             _actionSetService = actionSetService;
             _combatClick = combatClick;
             _peacefulClick = peacefulClick;
+            _mouseInput = mouseInput;
         }
 
         public void Update(float deltaTime)
@@ -26,12 +27,13 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 
             if (actionMode == ActionSet.Combat)
             {
-                _peacefulClick.TryPerformClick();
+                if (_mouseInput.FireButtonPressed)
+                    _combatClick.TryPerformClick();
             }
             else
             {
-                _combatClick.TryPerformClick();
-
+                if (_mouseInput.FireButtonPressed)
+                    _peacefulClick.TryPerformClick();
             }
         }
     }

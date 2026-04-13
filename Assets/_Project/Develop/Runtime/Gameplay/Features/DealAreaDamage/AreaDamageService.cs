@@ -7,8 +7,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features.DealAreaDamage
     public class AreaDamageService
     {
         private readonly CollidersRegistryService _collidersRegistry;
-        private Buffer<Collider> _collidersBuffer;
-        private Buffer<Entity> _entitiesBuffer;
+        private Buffer<Collider> _collidersBuffer = new Buffer<Collider>(64);
+        private Buffer<Entity> _entitiesBuffer = new Buffer<Entity>(64);
 
         public AreaDamageService(CollidersRegistryService collidersRegistry)
         {

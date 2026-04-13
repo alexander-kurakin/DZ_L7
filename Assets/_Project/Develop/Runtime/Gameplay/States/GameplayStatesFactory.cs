@@ -1,4 +1,5 @@
 ﻿using _Project.Develop.Runtime.Configs.Meta.Stats;
+using _Project.Develop.Runtime.Gameplay.Features.Actions;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
@@ -25,12 +26,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
         public PreparationState CreatePreparationState()
         {
-            return new PreparationState(_container.Resolve<PreparationTriggerService>());
+            return new PreparationState(
+                _container.Resolve<PreparationTriggerService>(), 
+                _container.Resolve<GameplayActionSetService>());
         }
 
         public StageProcessState CreateStageProcessState()
         {
-            return new StageProcessState(_container.Resolve<StageProviderService>());
+            return new StageProcessState(
+                _container.Resolve<StageProviderService>(), 
+                _container.Resolve<GameplayActionSetService>());
         }
 
         public WinState CreateWinState(GameplayInputArgs inputArgs)

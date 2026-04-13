@@ -1,4 +1,5 @@
-﻿using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
+﻿using _Project.Develop.Runtime.Gameplay.Features.Actions;
+using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 using UnityEngine;
 
@@ -7,16 +8,22 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
     public class PreparationState : State, IUpdatableState
     {
         private readonly PreparationTriggerService _preparationTriggerService;
+        private readonly GameplayActionSetService _actionSetService;
 
-        public PreparationState(PreparationTriggerService preparationTriggerService)
+        public PreparationState(
+            PreparationTriggerService preparationTriggerService, 
+            GameplayActionSetService actionSetService)
         {
             _preparationTriggerService = preparationTriggerService;
+            _actionSetService = actionSetService;
         }
 
         public override void Enter()
         {
             base.Enter();
-
+            
+            _actionSetService.SetActionSet(ActionSet.Peaceful);
+            
             Vector3 nextStageTriggerPosition = Vector3.zero + Vector3.forward * 15;
             _preparationTriggerService.Create(nextStageTriggerPosition);
         }

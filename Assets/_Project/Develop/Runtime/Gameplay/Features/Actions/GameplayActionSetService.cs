@@ -1,5 +1,6 @@
 using System;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
+using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 {
@@ -18,7 +19,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 
         private void OnActionSetChanged(ActionSet arg1, ActionSet arg2)
         {
-            throw new NotImplementedException();
+            Debug.Log($"{nameof(OnActionSetChanged)}({arg1}, {arg2})");
         }
 
         public void SetActionSet(ActionSet actionSet)

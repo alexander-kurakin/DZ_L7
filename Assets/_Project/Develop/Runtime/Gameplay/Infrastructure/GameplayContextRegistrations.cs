@@ -1,4 +1,5 @@
-﻿using _Project.Develop.Runtime.Gameplay.Features.DealAreaDamage;
+﻿using _Project.Develop.Runtime.Gameplay.Features.Actions;
+using _Project.Develop.Runtime.Gameplay.Features.DealAreaDamage;
 using _Project.Develop.Runtime.Gameplay.Features.Input;
 using _Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
@@ -11,6 +12,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
+using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.Utilities.AssetsManagment;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
@@ -66,7 +68,35 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.RegisterAsSingle(CreateGameplayScreenPresenter).NonLazy();
             
             container.RegisterAsSingle(CreateAreaDamageService);
+            
+            container.RegisterAsSingle(CreateGameplayActionSetService);
+            
+            container.RegisterAsSingle(CreateCombatClick);
+            
+            container.RegisterAsSingle(CreatePeacefulClick);
+            
+            container.RegisterAsSingle(CreateMouseClickActions);
         }
+        
+        private static GameplayActionSetService CreateGameplayActionSetService(DIContainer c)
+            => new GameplayActionSetService();
+        
+        private static CombatClick CreateCombatClick(DIContainer c)
+            => new CombatClick(
+                c.Resolve<AreaDamageService>(),
+                c.Resolve<MouseInput>(),
+                c.Resolve<MouseRaycastService>(),
+                c.Resolve<MainHeroHolderService>());
+        
+        private static PeacefulClick CreatePeacefulClick(DIContainer c)
+            => new PeacefulClick(c.Resolve<WalletService>());
+        
+        private static MouseClickActions CreateMouseClickActions(DIContainer c)
+            => new MouseClickActions(
+                c.Resolve<GameplayActionSetService>(),
+                c.Resolve<CombatClick>(),
+                c.Resolve<PeacefulClick>(),
+                c.Resolve<MouseInput>());
         
         private static AreaDamageService CreateAreaDamageService(DIContainer c)
         {
