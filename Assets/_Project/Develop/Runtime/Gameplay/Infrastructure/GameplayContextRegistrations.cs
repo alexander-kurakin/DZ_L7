@@ -84,19 +84,20 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private static CombatClick CreateCombatClick(DIContainer c)
             => new CombatClick(
                 c.Resolve<AreaDamageService>(),
-                c.Resolve<MouseInput>(),
-                c.Resolve<MouseRaycastService>(),
                 c.Resolve<MainHeroHolderService>());
         
         private static PeacefulClick CreatePeacefulClick(DIContainer c)
-            => new PeacefulClick(c.Resolve<WalletService>());
+            => new PeacefulClick(
+                c.Resolve<WalletService>(),
+                c.Resolve<EntitiesFactory>());
         
         private static MouseClickActions CreateMouseClickActions(DIContainer c)
             => new MouseClickActions(
                 c.Resolve<GameplayActionSetService>(),
                 c.Resolve<CombatClick>(),
                 c.Resolve<PeacefulClick>(),
-                c.Resolve<MouseInput>());
+                c.Resolve<MouseInput>(),
+                c.Resolve<MouseRaycastService>());
         
         private static AreaDamageService CreateAreaDamageService(DIContainer c)
         {

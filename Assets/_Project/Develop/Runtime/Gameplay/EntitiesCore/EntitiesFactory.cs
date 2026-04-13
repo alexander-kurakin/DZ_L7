@@ -175,7 +175,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddContactsDetectingMask(Layers.CharactersMask)
                 .AddContactCollidersBuffer(new Buffer<Collider>(64))
                 .AddContactEntitiesBuffer(new Buffer<Entity>(64))
-                .AddTeam(new ReactiveVariable<Teams>(Teams.MainHero));
+                .AddTeam(new ReactiveVariable<Teams>(Teams.MainHero))
+                .AddMineDamage(new ReactiveVariable<float>(100))
+                .AddMineDamageableMask(Layers.CharactersMask)
+                .AddMineExplosionRadius(new ReactiveVariable<float>(5));
 
             entity
                 .AddSystem(new BodyContactsDetectingSystem(ColliderType.Sphere))

@@ -1,25 +1,28 @@
+using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 {
     public class PeacefulClick
     {
         private readonly WalletService _walletService;
+        private readonly EntitiesFactory  _entitiesFactory;
 
-        public PeacefulClick(WalletService walletService)
+        public PeacefulClick(
+            WalletService walletService,
+            EntitiesFactory entitiesFactory)
         {
             _walletService = walletService;
+            _entitiesFactory = entitiesFactory;
         }
 
-        public void TryPerformClick()
+        public void TryPerformClick(RaycastHit raycastHit)
         {
-            //TODO: config value for the Spend amount
-            if (_walletService.Enough(CurrencyTypes.Gold, 50))
+            if (_walletService.Enough(CurrencyTypes.Gold, 50)) //config
             {
-                
-                
-                _walletService.Spend(CurrencyTypes.Gold, 50);
-                //TODO: new service + method to spawn a mine
+                _walletService.Spend(CurrencyTypes.Gold, 50); //config
+                _entitiesFactory.CreateMine(raycastHit.point);
             }
         }
     }

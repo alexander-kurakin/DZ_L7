@@ -10,7 +10,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Mines
     public class MineDetonationSystem : IInitializableSystem, IUpdatableSystem
     {
         private Buffer<Entity> _contacts;
-        private ReactiveVariable<float> _damage;
         private List<Entity> _processedEntities;
         private Entity _mineEntity;
         private bool _hasDetonated;
@@ -27,7 +26,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Mines
         public void OnInit(Entity entity)
         {
             _contacts = entity.ContactEntitiesBuffer;
-            _damage = entity.MineDamage;
             _processedEntities = new List<Entity>(_contacts.Items.Length);
             _mineEntity = entity;
         }
