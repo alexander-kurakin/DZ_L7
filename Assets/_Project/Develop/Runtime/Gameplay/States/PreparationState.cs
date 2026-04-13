@@ -1,5 +1,7 @@
-﻿using _Project.Develop.Runtime.Gameplay.Features.Actions;
+﻿using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
+using _Project.Develop.Runtime.Gameplay.Features.Actions;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 using UnityEngine;
 
@@ -9,13 +11,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
     {
         private readonly PreparationTriggerService _preparationTriggerService;
         private readonly GameplayActionSetService _actionSetService;
+        private readonly MouseActionsConfig _mouseActionsConfig;
 
         public PreparationState(
             PreparationTriggerService preparationTriggerService, 
-            GameplayActionSetService actionSetService)
+            GameplayActionSetService actionSetService,
+            ConfigsProviderService  configsProviderService)
         {
             _preparationTriggerService = preparationTriggerService;
             _actionSetService = actionSetService;
+            _mouseActionsConfig = configsProviderService.GetConfig<MouseActionsConfig>();
         }
 
         public override void Enter()
@@ -23,9 +28,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             base.Enter();
             
             _actionSetService.SetActionSet(ActionSet.Peaceful);
-            
-            Vector3 nextStageTriggerPosition = Vector3.zero + Vector3.forward * 15;
-            _preparationTriggerService.Create(nextStageTriggerPosition);
+
+            _preparationTriggerService.Create(_mouseActionsConfig.ContactTriggerStartPosition);
         }
 
         public void Update(float deltaTime)

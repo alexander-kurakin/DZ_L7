@@ -3,6 +3,7 @@ using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using System;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 {
@@ -23,7 +24,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
                     return new ClearAllEnemiesStage(
                         clearAllEnemiesStageConfig,
                         _container.Resolve<EnemiesFactory>(),
-                        _container.Resolve<EntitiesLifeContext>());
+                        _container.Resolve<EntitiesLifeContext>(),
+                        _container.Resolve<ConfigsProviderService>());
 
                 default:
                     throw new ArgumentException($"Not supported {stageConfig.GetType()} type config");

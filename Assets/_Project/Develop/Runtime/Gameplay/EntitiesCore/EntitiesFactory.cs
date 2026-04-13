@@ -39,7 +39,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
         public Entity CreateTower(TowerConfig config, LevelConfig levelConfig)
         {
             Entity entity = CreateEmpty();
-            Vector3 startPosition = Vector3.zero;
+            Vector3 startPosition = config.StartPosition;
             
             _monoEntitiesFactory.Create(entity, startPosition, config.PrefabPath);
 
@@ -165,20 +165,20 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             return entity;
         }
 
-        public Entity CreateMine(Vector3 position)
+        public Entity CreateMine(Vector3 position, MineConfig mineConfig)
         {
             Entity entity = CreateEmpty();
             
-            _monoEntitiesFactory.Create(entity, position, "Entities/Mine");
+            _monoEntitiesFactory.Create(entity, position, mineConfig.PrefabPath);
             
             entity
                 .AddContactsDetectingMask(Layers.CharactersMask)
                 .AddContactCollidersBuffer(new Buffer<Collider>(64))
                 .AddContactEntitiesBuffer(new Buffer<Entity>(64))
                 .AddTeam(new ReactiveVariable<Teams>(Teams.MainHero))
-                .AddMineDamage(new ReactiveVariable<float>(100))
+                .AddMineDamage(new ReactiveVariable<float>(mineConfig.MineDamage))
                 .AddMineDamageableMask(Layers.CharactersMask)
-                .AddMineExplosionRadius(new ReactiveVariable<float>(5));
+                .AddMineExplosionRadius(new ReactiveVariable<float>(mineConfig.MineExplosionRadius));
 
             entity
                 .AddSystem(new BodyContactsDetectingSystem(ColliderType.Sphere))

@@ -28,7 +28,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         {
             return new PreparationState(
                 _container.Resolve<PreparationTriggerService>(), 
-                _container.Resolve<GameplayActionSetService>());
+                _container.Resolve<GameplayActionSetService>(),
+                _container.Resolve<ConfigsProviderService>());
         }
 
         public StageProcessState CreateStageProcessState()

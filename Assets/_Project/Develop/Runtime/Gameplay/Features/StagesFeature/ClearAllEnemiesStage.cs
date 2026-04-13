@@ -4,6 +4,8 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 using System.Collections.Generic;
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,6 +19,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 
         private EnemiesFactory _enemiesFactory;
         private EntitiesLifeContext _entitiesLifeContext;
+        private readonly TowerConfig _towerConfig;
 
         private bool _inProcess;
 
@@ -25,11 +28,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
         public ClearAllEnemiesStage(
             ClearAllEnemiesStageConfig config,
             EnemiesFactory enemiesFactory,
-            EntitiesLifeContext entitiesLifeContext)
+            EntitiesLifeContext entitiesLifeContext,
+            ConfigsProviderService  configsProviderService)
         {
             _config = config;
             _enemiesFactory = enemiesFactory;
             _entitiesLifeContext = entitiesLifeContext;
+            _towerConfig = configsProviderService.GetConfig<TowerConfig>();
         }
 
         public IReadOnlyEvent Completed => _completed;
@@ -92,7 +97,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 
         private Vector3 GenerateRandomPositionInCircle()
         {
-            Vector3 center = Vector3.zero;
+            Vector3 center = _towerConfig.StartPosition;
 
             Vector2 disk = Random.insideUnitCircle.normalized * _config.EnemySpawnRadius;
             

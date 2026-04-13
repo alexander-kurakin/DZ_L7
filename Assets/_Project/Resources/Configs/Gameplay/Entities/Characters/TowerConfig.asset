@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: TowerConfig
   m_EditorClassIdentifier: 
   <PrefabPath>k__BackingField: Entities/Tower
-  <MoveSpeed>k__BackingField: 10
-  <DeathProcessTime>k__BackingField: 2
+  <DeathProcessTime>k__BackingField: 1

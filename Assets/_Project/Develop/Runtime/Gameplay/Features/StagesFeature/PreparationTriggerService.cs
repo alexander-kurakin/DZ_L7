@@ -1,23 +1,23 @@
 ﻿using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
+using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.Input;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 {
     public class PreparationTriggerService
     {
-        private const float _rayDistance = 1000f;
-        private readonly int _triggerLayerMask = 1 << LayerMask.NameToLayer("ContactTrigger");
-        
         private ReactiveVariable<bool> _prepareTriggerClicked = new();
 
         private EntitiesFactory _entitiesFactory;
         private EntitiesLifeContext _entitiesLifeContext;
         private IMouseInputService _mouseInputService;
         private IMouseRaycastService _mouseRaycastService;
+        private readonly MouseActionsConfig _mouseActionsConfig;
 
         private Entity _nextStageTrigger;
 
@@ -25,12 +25,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             EntitiesFactory entitiesFactory, 
             EntitiesLifeContext entitiesLifeContext,
             IMouseInputService mouseInputService,
-            IMouseRaycastService mouseRaycastService)
+            IMouseRaycastService mouseRaycastService,
+            ConfigsProviderService configsProviderService)
         {
             _entitiesFactory = entitiesFactory;
             _entitiesLifeContext = entitiesLifeContext;
             _mouseInputService = mouseInputService;
             _mouseRaycastService = mouseRaycastService;
+            _mouseActionsConfig = configsProviderService.GetConfig<MouseActionsConfig>();
         }
 
         public IReadOnlyVariable<bool> PrepareTriggerClicked => _prepareTriggerClicked;
@@ -48,7 +50,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             if (_nextStageTrigger == null 
                 || _mouseInputService.IsEnabled == false
                 || _mouseInputService.FireButtonPressed == false
-                || _mouseRaycastService.TryGetHit(_mouseInputService.PointerScreenPosition, out RaycastHit hit, _rayDistance, _triggerLayerMask) == false)
+                || _mouseRaycastService.TryGetHit(
+                    _mouseInputService.PointerScreenPosition, 
+                    out RaycastHit hit, 
+                    _mouseActionsConfig.MouseRaycastDistance, 
+                    _mouseActionsConfig.ContactTriggerLayerMask) == false)
             
             {
                 _prepareTriggerClicked.Value = false;

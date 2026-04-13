@@ -1,21 +1,19 @@
+using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.Input;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Features.Actions
 {
     public class MouseClickActions
     {
-        private const float RayDistance = 1000f; //config?
-        private readonly int _combatLayerMask = LayerMask.GetMask("ContactTrigger", "Floor", "Characters"); //config?
-        private readonly int _peacefulLayerMask = LayerMask.GetMask("Floor");
-        
-        
         private readonly GameplayActionSetService _actionSetService;
         private readonly CombatClick _combatClick;
         private readonly PeacefulClick _peacefulClick;
         private readonly MouseInput _mouseInput;
         private readonly MouseRaycastService _mouseRaycastService;
+        private readonly MouseActionsConfig  _mouseActionsConfig;
 
         private int _clickLayerMask;
         private RaycastHit _raycastHit;
@@ -26,43 +24,45 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
             CombatClick combatClick,
             PeacefulClick peacefulClick,
             MouseInput mouseInput,
-            MouseRaycastService mouseRaycastService)
+            MouseRaycastService mouseRaycastService,
+            ConfigsProviderService configsProviderService)
         {
             _actionSetService = actionSetService;
             _combatClick = combatClick;
             _peacefulClick = peacefulClick;
             _mouseInput = mouseInput;
             _mouseRaycastService = mouseRaycastService;
+            _mouseActionsConfig = configsProviderService.GetConfig<MouseActionsConfig>();
         }
 
         public void Update(float deltaTime)
         {
             ActionSet actionMode = _actionSetService.CurrentActionSet.Value;
             
-            _clickLayerMask = actionMode==ActionSet.Peaceful ? _peacefulLayerMask : _combatLayerMask;
-            
-            if (TryGetClick(_clickLayerMask))
+            if (TryGetClick())
             {
                 if (actionMode == ActionSet.Combat)
                 {
                     if (_mouseInput.FireButtonPressed)
-                        _combatClick.TryPerformClick(_raycastHit);
+                        _combatClick.TryPerformClick(_raycastHit, _mouseActionsConfig);
                 }
                 else
                 {
-                    if (_mouseInput.FireButtonPressed)
+                    bool isFloorFirstLayer = _raycastHit.collider.gameObject.layer == _mouseActionsConfig.FloorLayerIndex;
+                    
+                    if (_mouseInput.FireButtonPressed && isFloorFirstLayer)
                         _peacefulClick.TryPerformClick(_raycastHit);
                 }
             }
         }
 
-        private bool TryGetClick(LayerMask clickLayerMask)
+        private bool TryGetClick()
         {
             if (_mouseRaycastService.TryGetHit(
                     _mouseInput.PointerScreenPosition, 
                     out RaycastHit hit, 
-                    RayDistance,
-                    clickLayerMask))
+                    _mouseActionsConfig.MouseRaycastDistance,
+                    _mouseActionsConfig.GenericLayerMask))
             {
                 _raycastHit = hit;
                 return true;

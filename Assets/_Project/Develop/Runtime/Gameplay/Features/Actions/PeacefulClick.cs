@@ -1,5 +1,7 @@
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Features.Actions
@@ -8,21 +10,24 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Actions
     {
         private readonly WalletService _walletService;
         private readonly EntitiesFactory  _entitiesFactory;
+        private readonly MineConfig _mineConfig;
 
         public PeacefulClick(
             WalletService walletService,
-            EntitiesFactory entitiesFactory)
+            EntitiesFactory entitiesFactory,
+            ConfigsProviderService configsProviderService)
         {
             _walletService = walletService;
             _entitiesFactory = entitiesFactory;
+            _mineConfig = configsProviderService.GetConfig<MineConfig>();    
         }
 
         public void TryPerformClick(RaycastHit raycastHit)
         {
-            if (_walletService.Enough(CurrencyTypes.Gold, 50)) //config
+            if (_walletService.Enough(CurrencyTypes.Gold, _mineConfig.MineCostInGold)) //config
             {
-                _walletService.Spend(CurrencyTypes.Gold, 50); //config
-                _entitiesFactory.CreateMine(raycastHit.point);
+                _walletService.Spend(CurrencyTypes.Gold, _mineConfig.MineCostInGold); //config
+                _entitiesFactory.CreateMine(raycastHit.point, _mineConfig);
             }
         }
     }

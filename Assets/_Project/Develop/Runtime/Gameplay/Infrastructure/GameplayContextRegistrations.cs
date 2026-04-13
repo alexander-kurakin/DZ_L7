@@ -89,7 +89,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private static PeacefulClick CreatePeacefulClick(DIContainer c)
             => new PeacefulClick(
                 c.Resolve<WalletService>(),
-                c.Resolve<EntitiesFactory>());
+                c.Resolve<EntitiesFactory>(),
+                c.Resolve<ConfigsProviderService>());
         
         private static MouseClickActions CreateMouseClickActions(DIContainer c)
             => new MouseClickActions(
@@ -97,7 +98,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<CombatClick>(),
                 c.Resolve<PeacefulClick>(),
                 c.Resolve<MouseInput>(),
-                c.Resolve<MouseRaycastService>());
+                c.Resolve<MouseRaycastService>(),
+                c.Resolve<ConfigsProviderService>());
         
         private static AreaDamageService CreateAreaDamageService(DIContainer c)
         {
@@ -135,7 +137,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<EntitiesFactory>(),
                 c.Resolve<EntitiesLifeContext>(),
                 c.Resolve<MouseInput>(),
-                c.Resolve<MouseRaycastService>());
+                c.Resolve<MouseRaycastService>(),
+                c.Resolve<ConfigsProviderService>());
         }
 
         private static StageProviderService CreateStageProviderService(DIContainer c)
