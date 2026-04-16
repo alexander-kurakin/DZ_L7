@@ -51,21 +51,20 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 
         public void Update(float deltaTime)
         {
-            if (_nextStageTrigger == null 
-                || _mouseInputService.IsEnabled == false
-                || _mouseInputService.FireButtonPressed == false
-                || _mouseRaycastService.TryGetHit(
-                    _mouseInputService.PointerScreenPosition, 
-                    out RaycastHit hit, 
-                    _mouseActionsConfig.MouseRaycastDistance, 
-                    Layers.ContactTriggerLayerMask) == false)
-            
+            if (_nextStageTrigger != null &&
+                _prepareTriggerClicked.Value == false &&
+                _mouseInputService.FireButtonPressed)
             {
-                _prepareTriggerClicked.Value = false;
-                return;
+                if (_mouseRaycastService.TryGetHit(
+                        _mouseInputService.PointerScreenPosition,
+                        out RaycastHit hit,
+                        _mouseActionsConfig.MouseRaycastDistance,
+                        Layers.ContactTriggerLayerMask))
+                {
+                    _prepareTriggerClicked.Value = 
+                        hit.collider != null && hit.collider == _nextStageTrigger.BodyCollider;        
+                }
             }
-            
-            _prepareTriggerClicked.Value = hit.collider != null && hit.collider == _nextStageTrigger.BodyCollider;
         }
 
         public void Cleanup()
