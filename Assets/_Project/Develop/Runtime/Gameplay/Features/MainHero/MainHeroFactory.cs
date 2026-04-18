@@ -1,6 +1,7 @@
 ﻿using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Ability;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
@@ -15,7 +16,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.MainHero
         private readonly DIContainer _container;
 
         private readonly EntitiesFactory _entitiesFactory;
-        private readonly BrainsFactory _brainsFactory;
+        private readonly AbilitiesFactory _abilitiesFactory;
+        private readonly BrainsFactory _brainsFactory; //sorry bro no brain for Main Hero, maybe one day ;D
         private readonly ConfigsProviderService _configsProviderService;
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private int _currentLevelNumber;
@@ -27,21 +29,27 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.MainHero
             _brainsFactory = _container.Resolve<BrainsFactory>();
             _configsProviderService = _container.Resolve<ConfigsProviderService>();
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
+            _abilitiesFactory =  _container.Resolve<AbilitiesFactory>();
+            
             _currentLevelNumber =  currentLevelNumber;
         }
 
         public Entity Create()
         {
-            TowerConfig config = _configsProviderService.GetConfig<TowerConfig>();
+            TowerConfig towerConfig = _configsProviderService.GetConfig<TowerConfig>();
             LevelConfig levelConfig = _configsProviderService.GetConfig<LevelsListConfig>().GetBy(_currentLevelNumber);
 
-            Entity entity = _entitiesFactory.CreateTower(config, levelConfig);
+            Entity entity = _entitiesFactory.CreateTower(towerConfig, levelConfig);
 
             entity
                 .AddIsMainHero()
-                .AddTeam(new ReactiveVariable<Teams>(Teams.MainHero));
+                .AddTeam(new ReactiveVariable<Teams>(Teams.MainHero))
+                .AddAbilityUserActiveAbility()
+                .AddAbilityUserAllAbilities();
 
             _entitiesLifeContext.Add(entity);
+            
+            _abilitiesFactory.SetupAbilitiesForMainHero(entity, towerConfig);
 
             return entity;
         }

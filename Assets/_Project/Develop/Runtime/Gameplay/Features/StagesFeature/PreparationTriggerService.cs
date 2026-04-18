@@ -1,7 +1,6 @@
 ﻿using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
-using _Project.Develop.Runtime.Configs.Gameplay.MouseActions;
 using _Project.Develop.Runtime.Gameplay.Features.Input;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
@@ -19,10 +18,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
         private EntitiesLifeContext _entitiesLifeContext;
         private IMouseInputService _mouseInputService;
         private IMouseRaycastService _mouseRaycastService;
-        private readonly MouseActionsConfig _mouseActionsConfig;
         private readonly ContactTriggerConfig _contactTriggerConfig;
+        
 
         private Entity _nextStageTrigger;
+        private Entity _mainHero;
 
         public PreparationTriggerService(
             EntitiesFactory entitiesFactory, 
@@ -35,7 +35,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             _entitiesLifeContext = entitiesLifeContext;
             _mouseInputService = mouseInputService;
             _mouseRaycastService = mouseRaycastService;
-            _mouseActionsConfig = configsProviderService.GetConfig<MouseActionsConfig>();
             _contactTriggerConfig =  configsProviderService.GetConfig<ContactTriggerConfig>();
         }
 
@@ -53,18 +52,28 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
         {
             if (_nextStageTrigger != null &&
                 _prepareTriggerClicked.Value == false &&
-                _mouseInputService.FireButtonPressed)
+                MouseClickedOnContactTriggerLayer(out RaycastHit hitPoint))
             {
+                    _prepareTriggerClicked.Value = 
+                        hitPoint.collider != null && hitPoint.collider == _nextStageTrigger.BodyCollider;        
+            }
+        }
+        
+        private bool MouseClickedOnContactTriggerLayer(out RaycastHit rayHit)
+        {
+            if (_mouseInputService.FireButtonPressed)
                 if (_mouseRaycastService.TryGetHit(
                         _mouseInputService.PointerScreenPosition,
                         out RaycastHit hit,
-                        _mouseActionsConfig.MouseRaycastDistance,
+                        _contactTriggerConfig.MouseRaycastDistance,
                         Layers.ContactTriggerLayerMask))
                 {
-                    _prepareTriggerClicked.Value = 
-                        hit.collider != null && hit.collider == _nextStageTrigger.BodyCollider;        
+                    rayHit = hit;
+                    return true;
                 }
-            }
+
+            rayHit = default;
+            return false;
         }
 
         public void Cleanup()
