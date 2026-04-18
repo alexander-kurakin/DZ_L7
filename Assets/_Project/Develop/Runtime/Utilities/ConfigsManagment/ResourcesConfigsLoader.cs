@@ -23,6 +23,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.ConfigsManagment
             {typeof(MineConfig), "Configs/Gameplay/Entities/Characters/MineConfig" },
             {typeof(ContactTriggerConfig), "Configs/Gameplay/Entities/Characters/ContactTriggerConfig" },
             {typeof(RaycastConfig), "Configs/Gameplay/MouseConfig/RaycastConfig" },
+            {typeof(ExplodeAtPointAbilityConfig), "Configs/Gameplay/Entities/Abilities/ExplodeAtPointAbilityConfig" },
         };
 
         public ResourcesConfigsLoader(ResourcesAssetsLoader resources)

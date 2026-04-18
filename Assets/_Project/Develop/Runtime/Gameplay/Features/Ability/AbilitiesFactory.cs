@@ -21,6 +21,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Ability
         private readonly ConfigsProviderService _configsProviderService;
         private readonly CollidersRegistryService _collidersRegistryService;
         
+        private ExplodeAtPointAbilityConfig _explodeAtPointAbilityConfig;
+        
         public AbilitiesFactory(DIContainer container)
         {
             _entitiesLifeContext = container.Resolve<EntitiesLifeContext>();
@@ -28,14 +30,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Ability
             _walletService = container.Resolve<WalletService>();
             _configsProviderService = container.Resolve<ConfigsProviderService>();
             _collidersRegistryService = container.Resolve<CollidersRegistryService>();
+            
+            _explodeAtPointAbilityConfig = _configsProviderService.GetConfig<ExplodeAtPointAbilityConfig>();
         }
 
-        public void SetupAbilitiesForMainHero(Entity mainHero, TowerConfig towerConfig)
+        public void SetupAbilitiesForMainHero(Entity mainHero)
         {
             Dictionary<AbilityType, Entity> mapping = mainHero.AbilityUserAllAbilities;
 
             Entity plantMineAbility = CreatePlantMineAbility(mainHero);
-            Entity explodeAtPointAbility = CreateExplodeAtPointAbility(mainHero, towerConfig);
+            Entity explodeAtPointAbility = CreateExplodeAtPointAbility(mainHero);
             
             mapping[AbilityType.PlantMine] = plantMineAbility;
             mapping[AbilityType.ExplodeAtPoint] = explodeAtPointAbility;
@@ -63,7 +67,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Ability
             return entity;
         }
 
-        private Entity CreateExplodeAtPointAbility(Entity abilityOwner, TowerConfig towerConfig)
+        private Entity CreateExplodeAtPointAbility(Entity abilityOwner)
         {
             Entity entity = CreateEmpty();
 
@@ -77,8 +81,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Ability
                 .AddAbilityTypeName(new ReactiveVariable<AbilityType>(AbilityType.ExplodeAtPoint))
                 .AddAbilityUseRequest()
                 .AddTeam(new ReactiveVariable<Teams>(ownerTeam))
-                .AddAreaImpactDamage(new ReactiveVariable<float>(towerConfig.TowerExplosionDamage))
-                .AddAreaImpactRadius(new ReactiveVariable<float>(towerConfig.TowerExplosionRadius))
+                .AddAreaImpactDamage(new ReactiveVariable<float>(_explodeAtPointAbilityConfig.ExplosionDamage))
+                .AddAreaImpactRadius(new ReactiveVariable<float>(_explodeAtPointAbilityConfig.ExplosionRadius))
                 .AddAreaImpactMask(Layers.CharactersMask)
                 .AddAreaImpactCollidersBuffer(new Buffer<Collider>(64))
                 .AddAreaImpactEntitiesBuffer(new Buffer<Entity>(64))

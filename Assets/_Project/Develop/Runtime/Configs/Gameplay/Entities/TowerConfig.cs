@@ -8,7 +8,5 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Entities
         [field: SerializeField] public string PrefabPath { get; private set; } = "Entities/Tower";
         [field: SerializeField, Min(0)] public float DeathProcessTime { get; private set; } = 1;
         [field: SerializeField] public Vector3 StartPosition { get; private set; } = Vector3.zero;
-        [field: SerializeField, Min(0)] public float TowerExplosionDamage { get; private set; } = 100;
-        [field: SerializeField, Min(0)] public float TowerExplosionRadius { get; private set; } = 5;
     }
 }

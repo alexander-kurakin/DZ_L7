@@ -49,7 +49,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.MainHero
 
             _entitiesLifeContext.Add(entity);
             
-            _abilitiesFactory.SetupAbilitiesForMainHero(entity, towerConfig);
+            _abilitiesFactory.SetupAbilitiesForMainHero(entity);
 
             return entity;
         }
