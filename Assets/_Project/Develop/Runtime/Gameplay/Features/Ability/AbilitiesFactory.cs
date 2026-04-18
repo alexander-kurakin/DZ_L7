@@ -45,7 +45,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Ability
             _entitiesLifeContext.Add(explodeAtPointAbility);
         }
 
-        public Entity CreatePlantMineAbility(Entity abilityOwner)
+        private Entity CreatePlantMineAbility(Entity abilityOwner)
         {
             Entity entity = CreateEmpty();
             //абилка не наносит урон - ей не нужна команда. однако в самой мине - у нас команда есть
@@ -63,7 +63,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Ability
             return entity;
         }
 
-        public Entity CreateExplodeAtPointAbility(Entity abilityOwner, TowerConfig towerConfig)
+        private Entity CreateExplodeAtPointAbility(Entity abilityOwner, TowerConfig towerConfig)
         {
             Entity entity = CreateEmpty();
 
