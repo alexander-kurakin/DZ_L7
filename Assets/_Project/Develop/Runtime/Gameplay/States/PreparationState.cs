@@ -65,10 +65,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                         _mouseInputService.PointerScreenPosition,
                         out RaycastHit hit,
                         _mouseRaycastConfig.MouseRaycastDistance,
-                        Layers.FloorLayerMask))
+                        Layers.FloorAndTriggerMask))
                 {
-                    hitPoint = hit.point;
-                    return true;
+                    if (hit.collider.gameObject.layer != Layers.ContactTrigger)
+                    {
+                        hitPoint = hit.point;
+                        return true;
+                    }
                 }
 
             hitPoint = Vector3.zero;

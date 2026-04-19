@@ -10,7 +10,7 @@ namespace Assets._Project.Develop.Runtime.Utilities
         public static readonly int Enviroment = LayerMask.NameToLayer("Enviroment");
         public static readonly LayerMask EnviromentMask = 1 << Enviroment;
         
-        private static readonly int ContactTrigger = LayerMask.NameToLayer("ContactTrigger");
+        public static readonly int ContactTrigger = LayerMask.NameToLayer("ContactTrigger");
         public static readonly LayerMask ContactTriggerLayerMask = 1 << ContactTrigger;
 
         public static readonly LayerMask GenericLayerMask = LayerMask.GetMask("ContactTrigger", "Floor", "Characters");
@@ -18,5 +18,6 @@ namespace Assets._Project.Develop.Runtime.Utilities
         public static readonly int FloorLayerIndex = LayerMask.NameToLayer("Floor");
         public static readonly LayerMask FloorLayerMask = 1 << FloorLayerIndex;
 
+        public static readonly LayerMask FloorAndTriggerMask =  LayerMask.GetMask("ContactTrigger", "Floor"); 
     }
 }
